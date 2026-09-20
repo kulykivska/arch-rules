@@ -1,0 +1,25 @@
+# The rules this repo holds itself to. tests/test_arch_rules.py runs them.
+
+[[rules]]
+id = "library-does-not-import-the-cli"
+description = "The CLI is one caller of the library; the library must not know it exists, or importing arch_rules in a test suite drags argparse plumbing along."
+scope = ["src/arch_rules/core.py", "src/arch_rules/testing.py"]
+may_not_import = ["arch_rules.cli"]
+
+[[rules]]
+id = "no-runtime-dependencies"
+description = "This is a check people add to a repo they already trust; it must not widen their dependency tree. argparse over click, tomllib over toml, and pyyaml only inside the function that needs it."
+scope = ["src/arch_rules"]
+forbidden_imports = ["click", "typer", "requests", "httpx", "pydantic", "toml"]
+
+[[rules]]
+id = "no-secrets-in-repo"
+description = "Keys belong in the environment, never in a file that gets pushed."
+scope = ["src", "tests", ".github"]
+forbidden_regex = "(?i)(api[_-]?key|token|password)\\s*=\\s*[\"'][A-Za-z0-9/+_-]{16,}[\"']"
+
+[[rules]]
+id = "readme-says-the-licence"
+description = "Someone deciding whether to copy this needs to know the terms without opening another file."
+scope = ["README.md"]
+required_patterns = ["## License"]

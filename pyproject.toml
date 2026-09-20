@@ -1,0 +1,63 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "arch-rules"
+version = "0.1.0"
+description = "The architecture rules nobody wrote down, in a file your test suite reads. No dependencies."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Yuliia Kulykivska" }]
+requires-python = ">=3.11"
+keywords = ["architecture", "layering", "lint", "imports", "pytest", "fitness-function"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Framework :: Pytest",
+  "Topic :: Software Development :: Quality Assurance",
+  "Typing :: Typed",
+]
+dependencies = []
+
+[project.optional-dependencies]
+yaml = ["pyyaml>=6"]
+dev = ["pytest>=8", "ruff>=0.6", "mypy>=1.11", "pyyaml>=6"]
+
+[project.scripts]
+arch-rules = "arch_rules.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/kulykivska/arch-rules"
+Issues = "https://github.com/kulykivska/arch-rules/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/arch_rules"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 96
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF", "S", "PL"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101", "PLR2004", "PLC0415"]
+
+[tool.mypy]
+files = ["src"]
+python_version = "3.11"
+strict = true
+
+[[tool.mypy.overrides]]
+# pyyaml is an optional extra; its stubs are not a dependency of this package.
+module = "yaml"
+ignore_missing_imports = true
